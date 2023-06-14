@@ -1,0 +1,86 @@
+[
+  {
+    "geometry": {
+      "location": {
+        "lat": 30.270079,
+        "lng": -97.744379
+      },
+      "viewport": {
+        "northeast": {
+          "lat": 30.2714238802915,
+          "lng": -97.7430207697085
+        },
+        "southwest": {
+          "lat": 30.2687259197085,
+          "lng": -97.7457187302915
+        }
+      }
+    },
+    "name": "Cyclery Austin",
+    "rating": 4.5,
+    "vicinity": "123 Main Street, Austin"
+  },
+  {
+    "geometry": {
+      "location": {
+        "lat": 30.283897,
+        "lng": -97.742737
+      },
+      "viewport": {
+        "northeast": {
+          "lat": 30.2852418802915,
+          "lng": -97.7413787697085
+        },
+        "southwest": {
+          "lat": 30.2825439197085,
+          "lng": -97.7440767302915
+        }
+      }
+    },
+    "name": "Austin Bikes",
+    "rating": 4.2,
+    "vicinity": "456 Elm Street, Austin"
+  },
+  {
+    "geometry": {
+      "location": {
+        "lat": 30.281057,
+        "lng": -97.769272
+      },
+      "viewport": {
+        "northeast": {
+          "lat": 30.2824018802915,
+          "lng": -97.7679137697085
+        },
+        "southwest": {
+          "lat": 30.2797039197085,
+          "lng": -97.7706117302915
+        }
+      }
+    },
+    "name": "Ride Austin",
+    "rating": 4.8,
+    "vicinity": "789 Oak Street, Austin"
+  },
+  {
+    "geometry": {
+      "location": {
+        "lat": 30.289166,
+        "lng": -97.729437
+      },
+      "viewport": {
+        "northeast": {
+          "lat": 30.2905108802915,
+          "lng": -97.72807876970851
+        },
+        "southwest": {
+          "lat": 30.2878129197085,
+          "lng": -97.73077673029152
+        }
+      }
+    },
+    "name": "Pedal Power",
+    "rating": 4.4,
+    "vicinity": "321 Oak Lane, Austin"
+  }
+]

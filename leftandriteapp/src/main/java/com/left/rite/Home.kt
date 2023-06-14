@@ -1,19 +1,47 @@
 package com.left.rite
 
+import android.Manifest
+import android.Manifest.permission
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.graphics.Color
+import android.location.Location
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
-import android.Manifest
-import android.content.pm.PackageManager
-import android.graphics.Color
-import android.os.Build
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Transformations.map
+import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.maps.android.clustering.ClusterManager
+import com.google.maps.android.ktx.awaitMap
+import com.google.maps.android.ktx.awaitMapLoad
+import com.left.rite.place.Place
+import com.left.rite.place.PlaceRenderer
+import com.left.rite.place.PlacesReader
 
-class Home : Fragment(), View.OnClickListener {
+class Home : Fragment(), View.OnClickListener, OnMapReadyCallback {
     private var binding: View? = null
+
+    private val places: List<Place> by lazy {
+        PlacesReader(requireContext()).read()
+    }
+    private lateinit var mMap: GoogleMap
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private val locationPermissionCode = 1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,8 +49,115 @@ class Home : Fragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         val binding = inflater.inflate(R.layout.home, container, false)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        val mapFragment =
+            childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
+        mapFragment.getMapAsync(this)
+//        lifecycleScope.launchWhenCreated {
+//            // Get map
+//            val googleMap = mapFragment.awaitMap()
+//            addClusteredMarkers(googleMap)
+//
+//            // Wait for map to finish loading
+//            googleMap.awaitMapLoad()
+//
+//            // Ensure all places are visible in the map
+//            val bounds = LatLngBounds.builder()
+//            places.forEach { bounds.include(it.latLng) }
+//            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 20))
+//        }
         this.binding = binding
         return binding
+    }
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
+                locationPermissionCode
+            )
+        } else {
+            enableMyLocation()
+        }
+
+        mMap.uiSettings.isMyLocationButtonEnabled = true
+
+        addClusteredMarkers(googleMap)
+
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun enableMyLocation() {
+        mMap.isMyLocationEnabled = true
+
+        fusedLocationClient.lastLocation.addOnSuccessListener(requireActivity()) { location: Location? ->
+            location?.let {
+                val currentLatLng = LatLng(it.latitude, it.longitude)
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng, 12f))
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == locationPermissionCode) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                enableMyLocation()
+            }
+        }
+    }
+
+
+    /**
+     * Adds markers to the map with clustering support.
+     */
+    private fun addClusteredMarkers(googleMap: GoogleMap) {
+        // Create the ClusterManager class and set the custom renderer
+        val clusterManager = ClusterManager<Place>(activity, googleMap)
+        clusterManager.renderer =
+            PlaceRenderer(
+                requireContext(),
+                googleMap,
+                clusterManager
+            )
+
+        // Set custom info window adapter
+        clusterManager.markerCollection.setInfoWindowAdapter(MarkerInfoWindowAdapter(requireContext()))
+
+        // Add the places to the ClusterManager
+        clusterManager.addItems(places)
+        clusterManager.cluster()
+
+        // When the camera starts moving, change the alpha value of the marker to translucent
+        googleMap.setOnCameraMoveStartedListener {
+            clusterManager.markerCollection.markers.forEach { it.alpha = 0.3f }
+            clusterManager.clusterMarkerCollection.markers.forEach { it.alpha = 0.3f }
+        }
+
+        googleMap.setOnCameraIdleListener {
+            // When the camera stops moving, change the alpha value back to opaque
+            clusterManager.markerCollection.markers.forEach { it.alpha = 1.0f }
+            clusterManager.clusterMarkerCollection.markers.forEach { it.alpha = 1.0f }
+
+            // Call clusterManager.onCameraIdle() when the camera stops moving so that re-clustering
+            // can be performed when the camera stops moving
+            clusterManager.onCameraIdle()
+        }
     }
 
     override fun onClick(view: View) {
@@ -152,5 +287,7 @@ class Home : Fragment(), View.OnClickListener {
         )
 
         private val TAG: String = Home::class.java.simpleName
+        const val REQUEST_CODE_LOCATION = 123
     }
+
 }

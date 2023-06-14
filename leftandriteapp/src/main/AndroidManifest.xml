@@ -3,10 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.left.rite">
 
-    <meta-data
-        android:name="com.google.android.geo.API_KEY"
-        android:value="${GOOGLE_MAPS_API_KEY}" />
-
     <!-- Location providers -->
     <uses-feature
         android:name="android.hardware.telephony"
@@ -52,6 +48,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="false"
         android:theme="@style/Theme.LeftAndRite">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${GOOGLE_MAPS_API_KEY}" />
+
         <activity
             android:name="com.left.rite.Main"
             android:label="@string/app"

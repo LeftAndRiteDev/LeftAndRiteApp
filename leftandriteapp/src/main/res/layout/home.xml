@@ -1,35 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:layout_width="match_parent"-->
-<!--    android:layout_height="match_parent"-->
-<!--    android:background="@android:color/white"-->
-<!--    android:orientation="vertical"-->
-<!--    android:paddingBottom="?attr/actionBarSize"-->
-<!--    tools:context="com.left.rite.Home">-->
-
-<!--&lt;!&ndash;    <fragment&ndash;&gt;-->
-<!--&lt;!&ndash;        class="com.google.android.gms.maps.SupportMapFragment"&ndash;&gt;-->
-<!--&lt;!&ndash;        android:id="@+id/map_fragment"&ndash;&gt;-->
-<!--&lt;!&ndash;        android:layout_width="match_parent"&ndash;&gt;-->
-<!--&lt;!&ndash;        android:layout_height="match_parent" />&ndash;&gt;-->
-
-<!--</FrameLayout>-->
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@android:color/white"
     android:orientation="vertical"
     android:paddingBottom="?attr/actionBarSize"
     tools:context="com.left.rite.Home">
 
-<!--    <fragment-->
-<!--        class="com.google.android.gms.maps.SupportMapFragment"-->
-<!--        android:id="@+id/map_fragment"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent" />-->
+    <fragment
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        android:id="@+id/map_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        map:mapId="@string/map_id"/>
 
-</LinearLayout>
+</FrameLayout>
+
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+<!--    xmlns:tools="http://schemas.android.com/tools"-->
+<!--    android:layout_width="fill_parent"-->
+<!--    android:layout_height="fill_parent"-->
+<!--    android:background="@android:color/white"-->
+<!--    android:orientation="vertical"-->
+<!--    android:paddingBottom="?attr/actionBarSize"-->
+<!--    tools:context="com.left.rite.Home">-->
+
+<!--    <fragment xmlns:map="http://schemas.android.com/apk/res-auto"-->
+<!--        android:id="@+id/map_fragment"-->
+<!--        class="com.google.android.gms.maps.SupportMapFragment"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent"-->
+<!--        map:mapId="YOUR_MAP_ID" />-->
+
+<!--</LinearLayout>-->
