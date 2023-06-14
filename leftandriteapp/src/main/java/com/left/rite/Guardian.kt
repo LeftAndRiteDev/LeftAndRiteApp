@@ -2,6 +2,7 @@ package com.left.rite
 
 import android.annotation.SuppressLint
 import android.app.*
+import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -45,7 +46,7 @@ class Guardian : Service() {
                 ""
             }
         val main = Intent(this, Main::class.java)
-        val pending = PendingIntent.getActivity(this, 0, main, 0)
+        val pending = PendingIntent.getActivity(this, 0, main, FLAG_IMMUTABLE)
         val notification = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(android.R.drawable.stat_sys_warning)
             .setContentTitle(app)

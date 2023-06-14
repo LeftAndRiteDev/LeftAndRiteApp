@@ -1,15 +1,16 @@
 plugins {
     id "com.android.application"
     id "kotlin-android"
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "com.left.rite"
-        minSdkVersion 16
-        targetSdkVersion 30
+        minSdkVersion 19
+        targetSdkVersion 31
         versionCode 1
         versionName "1.0.0"
     }
@@ -44,5 +45,16 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:2.3.5"
     implementation "androidx.preference:preference-ktx:1.1.1"
     implementation "com.google.android.material:material:1.4.0"
+//    implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation group: 'com.github.ipfs', name: 'java-ipfs-http-client', version: 'v1.3.3'
+    // Dependency to include Maps SDK for Android
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    implementation 'com.google.maps.android:android-maps-utils:2.2.0'
+    // [END_EXCLUDE]
+
+    // Maps SDK for Android KTX Library
+    implementation 'com.google.maps.android:maps-ktx:3.3.0'
+
+    // Maps SDK for Android Utility Library KTX Library
+    implementation 'com.google.maps.android:maps-utils-ktx:3.0.0'
 }

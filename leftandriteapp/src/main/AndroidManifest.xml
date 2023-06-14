@@ -3,6 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.left.rite">
 
+    <meta-data
+        android:name="com.google.android.geo.API_KEY"
+        android:value="${GOOGLE_MAPS_API_KEY}" />
+
     <!-- Location providers -->
     <uses-feature
         android:name="android.hardware.telephony"
@@ -46,13 +50,14 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app"
         android:roundIcon="@mipmap/ic_launcher_round"
-            android:supportsRtl="false"
+        android:supportsRtl="false"
         android:theme="@style/Theme.LeftAndRite">
         <activity
             android:name="com.left.rite.Main"
             android:label="@string/app"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity">
+            tools:ignore="LockedOrientationActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -62,7 +67,8 @@
             android:name="com.left.rite.Contact"
             android:label="@string/contact"
             android:screenOrientation="portrait"
-            tools:ignore="LockedOrientationActivity">
+            tools:ignore="LockedOrientationActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.left.rite.Contact" />
                 <category android:name="android.intent.category.DEFAULT" />
