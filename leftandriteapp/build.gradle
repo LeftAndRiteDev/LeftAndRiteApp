@@ -9,10 +9,11 @@ android {
 
     defaultConfig {
         applicationId "com.left.rite"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 31
         versionCode 1
         versionName "1.0.0"
+        manifestPlaceholders = [auth0Domain: "@string/auth0_domain", auth0Scheme: "@string/auth0_scheme"]
     }
 
     buildTypes {
@@ -59,6 +60,5 @@ dependencies {
     // Maps SDK for Android Utility Library KTX Library
     implementation 'com.google.maps.android:maps-utils-ktx:3.0.0'
     implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'pub.devrel:easypermissions:3.0.0'
-
+    implementation 'com.auth0.android:auth0:2.+'
 }
