@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:orientation="vertical"
-    android:paddingBottom="?attr/actionBarSize"
     tools:context="com.left.rite.Home">
 
     <fragment
@@ -18,21 +17,3 @@
         map:mapId="@string/map_id"/>
 
 </FrameLayout>
-
-<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-<!--    xmlns:tools="http://schemas.android.com/tools"-->
-<!--    android:layout_width="fill_parent"-->
-<!--    android:layout_height="fill_parent"-->
-<!--    android:background="@android:color/white"-->
-<!--    android:orientation="vertical"-->
-<!--    android:paddingBottom="?attr/actionBarSize"-->
-<!--    tools:context="com.left.rite.Home">-->
-
-<!--    <fragment xmlns:map="http://schemas.android.com/apk/res-auto"-->
-<!--        android:id="@+id/map_fragment"-->
-<!--        class="com.google.android.gms.maps.SupportMapFragment"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        map:mapId="YOUR_MAP_ID" />-->
-
-<!--</LinearLayout>-->
