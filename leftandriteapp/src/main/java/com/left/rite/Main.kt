@@ -2,9 +2,13 @@ package com.left.rite
 
 import com.left.rite.databinding.MainBinding
 import android.os.Bundle
+import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.auth0.android.Auth0
@@ -14,6 +18,7 @@ import com.auth0.android.provider.WebAuthProvider
 import com.auth0.android.result.Credentials
 import com.auth0.android.result.UserProfile
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 
 class Main : AppCompatActivity() {
@@ -22,6 +27,8 @@ class Main : AppCompatActivity() {
     private lateinit var account: Auth0
     private var cachedCredentials: Credentials? = null
     private var cachedUserProfile: UserProfile? = null
+
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,17 +62,46 @@ class Main : AppCompatActivity() {
                     //        Detector.instance(this)
                     val binding = MainBinding.inflate(layoutInflater)
                     setContentView(binding.root)
-                    val navView: BottomNavigationView = binding.navigation
-                    val navHostFragment =
-                        supportFragmentManager.findFragmentById(R.id.main) as NavHostFragment
-                    val navController = navHostFragment.navController
-                    val appBarConfiguration =
-                        AppBarConfiguration(setOf(R.id.about, R.id.signals, R.id.settings))
+                    setSupportActionBar(binding.appBarMain.toolbar)
+                    binding.appBarMain.fab.setOnClickListener { view ->
+                        Guardian.initiate( this@Main)
+                        Snackbar.make(view, "Starting ride tracking.", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show()
+
+                    }
+
+                    val drawerLayout: DrawerLayout = binding.drawerLayout
+                    val navView: NavigationView = binding.navView
+                    val navController = findNavController(R.id.nav_host_fragment_content_main)
+                    // Passing each menu ID as a set of Ids because each
+                    // menu should be considered as top level destinations.
+                    appBarConfiguration = AppBarConfiguration(
+                        setOf(
+                            R.id.home, R.id.signals, R.id.settings
+                        ), drawerLayout
+                    )
+
+//                    val navView: BottomNavigationView = binding.navigation
+//                    val navHostFragment =
+//                        supportFragmentManager.findFragmentById(R.id.main) as NavHostFragment
+//                    val navController = navHostFragment.navController
+//                    val appBarConfiguration =
+//                        AppBarConfiguration(setOf(R.id.about, R.id.signals, R.id.settings))
                     setupActionBarWithNavController(navController, appBarConfiguration)
                     navView.setupWithNavController(navController)
-                    Guardian.initiate( this@Main)
                 }
             })
+    }
+
+//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        menuInflater.inflate(R.menu.main, menu)
+//        return true
+//    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
     private fun logout() {
