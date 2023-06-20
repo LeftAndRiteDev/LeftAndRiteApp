@@ -65,6 +65,7 @@ class Main : AppCompatActivity() {
                     setSupportActionBar(binding.appBarMain.toolbar)
                     binding.appBarMain.fab.setOnClickListener { view ->
                         Guardian.initiate( this@Main)
+                        Home.setLocationTrackingEnabled(this@Main)
                         Snackbar.make(view, "Starting ride tracking.", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show()
 

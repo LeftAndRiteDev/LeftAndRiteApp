@@ -2,6 +2,7 @@ package com.left.rite
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
@@ -20,14 +21,21 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptor
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.Polyline
+import com.google.android.gms.maps.model.PolylineOptions
 import com.google.maps.android.clustering.ClusterManager
 import com.left.rite.place.Place
 import com.left.rite.place.PlaceRenderer
 import com.left.rite.place.PlacesReader
 import fr.quentinklein.slt.LocationTracker
 import fr.quentinklein.slt.ProviderError
+import java.util.Collections
+
 
 class Home : Fragment(), View.OnClickListener, OnMapReadyCallback, LocationTracker.Listener {
     private var binding: View? = null
@@ -39,11 +47,12 @@ class Home : Fragment(), View.OnClickListener, OnMapReadyCallback, LocationTrack
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val locationPermissionCode = 1
-    private val locationTracker: LocationTracker = LocationTracker(
-        minTimeBetweenUpdates = 5 * 60 * 1000.toLong(), minDistanceBetweenUpdates = 5f);
 
-    private val points = mutableListOf<LatLng>();
-    private val polyline: Polyline? = null
+    val polylineOptions = PolylineOptions()
+        .color(Color.BLUE)
+        .width(10f)
+
+    var mCurrLocationMarker: Marker? = null
 
     @SuppressLint("MissingPermission")
     override fun onCreateView(
@@ -56,20 +65,7 @@ class Home : Fragment(), View.OnClickListener, OnMapReadyCallback, LocationTrack
         val mapFragment =
             childFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
-//        lifecycleScope.launchWhenCreated {
-//            // Get map
-//            val googleMap = mapFragment.awaitMap()
-//            addClusteredMarkers(googleMap)
-//
-//            // Wait for map to finish loading
-//            googleMap.awaitMapLoad()
-//
-//            // Ensure all places are visible in the map
-//            val bounds = LatLngBounds.builder()
-//            places.forEach { bounds.include(it.latLng) }
-//            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 20))
-//        }
-        locationTracker.addListener(this);
+        locationTracker.addListener(this)
         this.binding = binding
         return binding
     }
@@ -100,8 +96,7 @@ class Home : Fragment(), View.OnClickListener, OnMapReadyCallback, LocationTrack
         mMap.uiSettings.isMyLocationButtonEnabled = true
 
         addClusteredMarkers(googleMap)
-        locationTracker.startListening(requireContext())
-
+//        locationTracker.startListening(requireContext())
     }
 
     @SuppressLint("MissingPermission")
@@ -127,7 +122,6 @@ class Home : Fragment(), View.OnClickListener, OnMapReadyCallback, LocationTrack
             }
         }
     }
-
 
     /**
      * Adds markers to the map with clustering support.
@@ -295,10 +289,61 @@ class Home : Fragment(), View.OnClickListener, OnMapReadyCallback, LocationTrack
 
         private val TAG: String = Home::class.java.simpleName
         const val REQUEST_CODE_LOCATION = 123
+
+        private val locationTracker: LocationTracker = LocationTracker(
+            minTimeBetweenUpdates = 1 * 60 * 1000.toLong(), minDistanceBetweenUpdates = 1f
+        );
+
+        @SuppressLint("MissingPermission")
+        internal fun setLocationTrackingEnabled(context: Context) {
+            locationTracker.startListening(context)
+        }
+
+        internal fun setLocationTrackingDisabled() {
+            locationTracker.stopListening()
+        }
     }
 
+    val locationList : MutableList<LatLng> = mutableListOf()
+
+
     override fun onLocationFound(location: Location) {
+        val latLng = LatLng(location.latitude, location.longitude)
+        if (locationList.size > 0) {
+            val prevLatLng = locationList.get(locationList.size -1)
+            if (getDistanceBetweenPoints(prevLatLng, latLng) > 1.0f) {
+                locationList.add(latLng)
+            }
+        } else {
+            locationList.add(latLng)
+        }
+
         println("Location found: $location")
+        println("location found List: ${locationList.size}")
+        val markerOptions =
+            MarkerOptions().title("Current Position").icon(
+            BitmapHelper.vectorToBitmap(requireContext(), R.drawable.ic_directions_bike_black_24dp, Color.BLACK)
+        )
+        markerOptions.position(latLng)
+        mCurrLocationMarker = mMap.addMarker(markerOptions)
+        polylineOptions.addAll(locationList.toList())
+        mMap.addPolyline(polylineOptions)
+        //move map camera
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(200f));
+    }
+
+    // distance in meters
+    fun getDistanceBetweenPoints(prevLoc: LatLng, currLoc: LatLng): Float {
+        val location1 = Location("location1")
+        location1.latitude = prevLoc.latitude
+        location1.longitude = prevLoc.longitude
+
+        val location2 = Location("location2")
+        location2.latitude = currLoc.latitude
+        location2.longitude = currLoc.longitude
+
+        return location1.distanceTo(location2)
     }
 
     override fun onProviderError(providerError: ProviderError) {
