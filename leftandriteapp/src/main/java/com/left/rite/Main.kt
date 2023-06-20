@@ -109,7 +109,6 @@ class Main : AppCompatActivity() {
             .withScheme("demo")
             .start(this, object: Callback<Void?, AuthenticationException> {
                 override fun onSuccess(payload: Void?) {
-                    // The user has been logged out!
                     print("User has been logged out")
                     // The user has been logged out!
                     cachedCredentials = null
