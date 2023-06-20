@@ -21,12 +21,15 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Polyline
 import com.google.maps.android.clustering.ClusterManager
 import com.left.rite.place.Place
 import com.left.rite.place.PlaceRenderer
 import com.left.rite.place.PlacesReader
+import fr.quentinklein.slt.LocationTracker
+import fr.quentinklein.slt.ProviderError
 
-class Home : Fragment(), View.OnClickListener, OnMapReadyCallback {
+class Home : Fragment(), View.OnClickListener, OnMapReadyCallback, LocationTracker.Listener {
     private var binding: View? = null
 
     private val places: List<Place> by lazy {
@@ -36,7 +39,13 @@ class Home : Fragment(), View.OnClickListener, OnMapReadyCallback {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val locationPermissionCode = 1
+    private val locationTracker: LocationTracker = LocationTracker(
+        minTimeBetweenUpdates = 5 * 60 * 1000.toLong(), minDistanceBetweenUpdates = 5f);
 
+    private val points = mutableListOf<LatLng>();
+    private val polyline: Polyline? = null
+
+    @SuppressLint("MissingPermission")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -60,9 +69,11 @@ class Home : Fragment(), View.OnClickListener, OnMapReadyCallback {
 //            places.forEach { bounds.include(it.latLng) }
 //            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds.build(), 20))
 //        }
+        locationTracker.addListener(this);
         this.binding = binding
         return binding
     }
+    @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
@@ -89,6 +100,7 @@ class Home : Fragment(), View.OnClickListener, OnMapReadyCallback {
         mMap.uiSettings.isMyLocationButtonEnabled = true
 
         addClusteredMarkers(googleMap)
+        locationTracker.startListening(requireContext())
 
     }
 
@@ -215,6 +227,7 @@ class Home : Fragment(), View.OnClickListener, OnMapReadyCallback {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        locationTracker.stopListening()
         binding = null
     }
 
@@ -282,6 +295,14 @@ class Home : Fragment(), View.OnClickListener, OnMapReadyCallback {
 
         private val TAG: String = Home::class.java.simpleName
         const val REQUEST_CODE_LOCATION = 123
+    }
+
+    override fun onLocationFound(location: Location) {
+        println("Location found: $location")
+    }
+
+    override fun onProviderError(providerError: ProviderError) {
+        println("Provider error: $providerError")
     }
 
 }
