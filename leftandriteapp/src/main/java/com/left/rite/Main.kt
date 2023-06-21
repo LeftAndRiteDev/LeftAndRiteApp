@@ -64,10 +64,19 @@ class Main : AppCompatActivity() {
                     setContentView(binding.root)
                     setSupportActionBar(binding.appBarMain.toolbar)
                     binding.appBarMain.fab.setOnClickListener { view ->
-                        Guardian.initiate( this@Main)
-                        Home.setLocationTrackingEnabled(this@Main)
-                        Snackbar.make(view, "Starting ride tracking.", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show()
+                        if (!Home.isLocationTrackingon) {
+                            Guardian.initiate( this@Main)
+                            Home.setLocationTrackingEnabled(this@Main)
+                            Snackbar.make(view, "Starting ride tracking.", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show()
+                            Home.isLocationTrackingon = true
+                        } else {
+                            Guardian.halt( this@Main)
+                            Home.setLocationTrackingDisabled()
+                            Snackbar.make(view, "Stopping ride tracking.", Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show()
+                            Home.isLocationTrackingon = false
+                        }
 
                     }
 

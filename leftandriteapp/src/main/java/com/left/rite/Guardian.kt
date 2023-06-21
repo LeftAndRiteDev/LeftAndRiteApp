@@ -19,6 +19,10 @@ class Guardian : Service() {
         Alarm.instance(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(): String {
         val channelId = resources.getString(R.string.app)
@@ -69,6 +73,11 @@ class Guardian : Service() {
             } else {
                 context.startService(intent)
             }
+        }
+
+        internal fun halt(context: Context) {
+            val intent = Intent(context, Guardian::class.java)
+            context.stopService(intent);
         }
 
         internal fun say(context: Context, level: Int, tag: String, message: String) {

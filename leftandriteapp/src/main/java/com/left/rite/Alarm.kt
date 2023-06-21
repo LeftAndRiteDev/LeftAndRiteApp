@@ -55,6 +55,7 @@ class Alarm private constructor(val context: Guardian) {
         }
 
         internal fun alert(context: Context) {
+
             val contact = Contact[context]
             if (contact != null && "" != contact) {
                 Guardian.say(
@@ -63,6 +64,8 @@ class Alarm private constructor(val context: Guardian) {
                     TAG,
                     "Alerting the emergency phone number ($contact)"
                 )
+//                message =
+//                    "Battery: $battery % Location ($time): $lat,$lon ~$accuracy m ^$altitude m $bearing deg $speed km/h http://maps.google.com/?q=${lat},${lon}"
                 Messenger.sms(context, Contact[context], "Fall Detected")
                 Telephony.call(context, contact)
             } else {

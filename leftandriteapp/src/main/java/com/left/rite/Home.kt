@@ -43,16 +43,9 @@ class Home : Fragment(), View.OnClickListener, OnMapReadyCallback, LocationTrack
     private val places: List<Place> by lazy {
         PlacesReader(requireContext()).read()
     }
-    private lateinit var mMap: GoogleMap
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val locationPermissionCode = 1
-
-    val polylineOptions = PolylineOptions()
-        .color(Color.BLUE)
-        .width(10f)
-
-    var mCurrLocationMarker: Marker? = null
 
     @SuppressLint("MissingPermission")
     override fun onCreateView(
@@ -289,10 +282,19 @@ class Home : Fragment(), View.OnClickListener, OnMapReadyCallback, LocationTrack
 
         private val TAG: String = Home::class.java.simpleName
         const val REQUEST_CODE_LOCATION = 123
+        var isLocationTrackingon = false
+        private lateinit var mMap: GoogleMap
+        val locationList : MutableList<LatLng> = mutableListOf()
 
         private val locationTracker: LocationTracker = LocationTracker(
             minTimeBetweenUpdates = 1 * 60 * 1000.toLong(), minDistanceBetweenUpdates = 1f
         );
+        val polylineOptions = PolylineOptions()
+            .color(Color.BLUE)
+            .width(10f)
+
+        var mCurrLocationMarker: Marker? = null
+
 
         @SuppressLint("MissingPermission")
         internal fun setLocationTrackingEnabled(context: Context) {
@@ -301,17 +303,23 @@ class Home : Fragment(), View.OnClickListener, OnMapReadyCallback, LocationTrack
 
         internal fun setLocationTrackingDisabled() {
             locationTracker.stopListening()
+            cleanMapWhenLocationTrackingDisabled()
+        }
+
+        private fun cleanMapWhenLocationTrackingDisabled() {
+            locationList.clear()
+            polylineOptions.points.clear()
+            mMap.clear()
         }
     }
 
-    val locationList : MutableList<LatLng> = mutableListOf()
 
 
     override fun onLocationFound(location: Location) {
         val latLng = LatLng(location.latitude, location.longitude)
         if (locationList.size > 0) {
             val prevLatLng = locationList.get(locationList.size -1)
-            if (getDistanceBetweenPoints(prevLatLng, latLng) > 1.0f) {
+            if (getDistanceBetweenPoints(prevLatLng, latLng) > 5.0f) {
                 locationList.add(latLng)
             }
         } else {
@@ -325,12 +333,13 @@ class Home : Fragment(), View.OnClickListener, OnMapReadyCallback, LocationTrack
             BitmapHelper.vectorToBitmap(requireContext(), R.drawable.ic_directions_bike_black_24dp, Color.BLACK)
         )
         markerOptions.position(latLng)
+        mCurrLocationMarker?.remove()
         mCurrLocationMarker = mMap.addMarker(markerOptions)
         polylineOptions.addAll(locationList.toList())
         mMap.addPolyline(polylineOptions)
         //move map camera
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(200f));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(15f));
     }
 
     // distance in meters
