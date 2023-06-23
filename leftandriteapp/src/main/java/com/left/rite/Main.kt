@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -87,7 +88,7 @@ class Main : AppCompatActivity() {
                     // menu should be considered as top level destinations.
                     appBarConfiguration = AppBarConfiguration(
                         setOf(
-                            R.id.home, R.id.profile, R.id.signals, R.id.settings, R.id.logout
+                            R.id.home, R.id.signals, R.id.settings
                         ), drawerLayout
                     )
 
@@ -99,6 +100,11 @@ class Main : AppCompatActivity() {
 //                        AppBarConfiguration(setOf(R.id.about, R.id.signals, R.id.settings))
                     setupActionBarWithNavController(navController, appBarConfiguration)
                     navView.setupWithNavController(navController)
+                    navView.getHeaderView(0).setOnClickListener {
+                        supportFragmentManager.beginTransaction().replace(R.id.nav_host_fragment_content_main, ProfileFragment())
+                            .commit()
+                        drawerLayout.closeDrawers()
+                    }
                 }
             })
     }

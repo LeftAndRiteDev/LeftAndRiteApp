@@ -62,4 +62,5 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.auth0.android:auth0:2.+'
     implementation 'com.github.quentin7b:android-location-tracker:4.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 }

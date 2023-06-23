@@ -9,9 +9,9 @@
             android:icon="@drawable/home_48px"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/profile"
-            android:icon="@drawable/person_48px"
-            android:title="@string/menu_profile" />
+            android:id="@+id/wallet"
+            android:icon="@drawable/wallet_48px"
+            android:title="@string/menu_wallet" />
         <item
             android:id="@+id/signals"
             android:icon="@drawable/help_48px"
