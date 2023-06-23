@@ -8,7 +8,7 @@
     android:orientation="vertical"
     tools:context="com.left.rite.Home">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         xmlns:map="http://schemas.android.com/apk/res-auto"
         class="com.google.android.gms.maps.SupportMapFragment"
         android:id="@+id/map_fragment"

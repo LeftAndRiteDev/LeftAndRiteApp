@@ -8,10 +8,10 @@
             android:id="@+id/home"
             android:icon="@drawable/home_48px"
             android:title="@string/menu_home" />
-<!--        <item-->
-<!--            android:id="@+id/nav_profile"-->
-<!--            android:icon="@drawable/person_48px"-->
-<!--            android:title="@string/menu_profile" />-->
+        <item
+            android:id="@+id/profile"
+            android:icon="@drawable/person_48px"
+            android:title="@string/menu_profile" />
         <item
             android:id="@+id/signals"
             android:icon="@drawable/help_48px"
@@ -20,9 +20,9 @@
             android:id="@+id/settings"
             android:icon="@drawable/settings_48px"
             android:title="@string/menu_settings" />
-<!--        <item-->
-<!--            android:id="@+id/nav_logout"-->
-<!--            android:icon="@drawable/logout_48px"-->
-<!--            android:title="@string/menu_logout" />-->
+        <item
+            android:id="@+id/logout"
+            android:icon="@drawable/logout_48px"
+            android:title="@string/menu_logout" />
     </group>
 </menu>
