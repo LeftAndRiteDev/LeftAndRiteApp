@@ -1,10 +1,15 @@
 package com.left.rite
 
 import android.content.Context
+import android.location.Location
+import android.location.LocationListener
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.SoundPool
 import android.os.Build
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class Alarm private constructor(val context: Guardian) {
     private var pool: SoundPool
@@ -54,6 +59,8 @@ class Alarm private constructor(val context: Guardian) {
             manager.setStreamVolume(stream, loudest, 0)
         }
 
+        private val format: SimpleDateFormat = SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.US)
+
         internal fun alert(context: Context) {
 
             val contact = Contact[context]
@@ -64,9 +71,16 @@ class Alarm private constructor(val context: Guardian) {
                     TAG,
                     "Alerting the emergency phone number ($contact)"
                 )
-//                message =
-//                    "Battery: $battery % Location ($time): $lat,$lon ~$accuracy m ^$altitude m $bearing deg $speed km/h http://maps.google.com/?q=${lat},${lon}"
-                Messenger.sms(context, Contact[context], "Fall Detected")
+                // get the Latitude and Longitude here somehow
+                val battery: Int = 66
+                val lat: Double = 30.1329348
+                val lon: Double = -97.7711089
+                val time: String = format.format(Date())
+                val message =
+                    "Check up on your friend. He's taken a tumble. \n " +
+                            "Battery: $battery % Time: ($time): \n" +
+                            "Location: $lat,$lon http://maps.google.com/?q=${lat},${lon}"
+                Messenger.sms(context, Contact[context], message)
                 Telephony.call(context, contact)
             } else {
                 Guardian.say(context, android.util.Log.ERROR, TAG, "ERROR: Emergency phone number not set")

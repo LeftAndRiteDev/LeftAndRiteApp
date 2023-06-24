@@ -11,7 +11,6 @@ import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.provider.Settings
-//import android.provider.Settings.Secure
 import androidx.core.app.ActivityCompat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -130,8 +129,8 @@ class Positioning private constructor(private val context: Guardian) : LocationL
     }
 
     companion object {
-        private const val METERS_10: Long = 10
-        private const val MINUTES_10: Float = 600000f
+        private const val METERS_10: Long = 1
+        private const val MINUTES_10: Float = 10000f
 
         internal var singleton: Positioning? = null
 
@@ -205,6 +204,7 @@ class Positioning private constructor(private val context: Guardian) : LocationL
                 applicationContext.startActivity(intent)
             }
         }
+
     }
 
     init {
